@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace LaravelSkir\Client\Http;
 
-use LaravelSkir\Runtime\DenseJson;
+use LaravelSkir\Client\Codecs\SkirClientCodec;
 use LaravelSkir\Runtime\MethodDescriptor;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
@@ -20,6 +20,7 @@ final class SkirRpcRequest extends Request implements HasBody
     public function __construct(
         private readonly MethodDescriptor $descriptor,
         private readonly mixed $request,
+        private readonly SkirClientCodec $codec,
         private readonly string $endpoint = '/',
     ) {}
 
@@ -38,7 +39,7 @@ final class SkirRpcRequest extends Request implements HasBody
     {
         return [
             'method' => $this->descriptor->name,
-            'request' => DenseJson::encode($this->descriptor->requestType, $this->request),
+            'request' => $this->codec->encodeRequest($this->descriptor, $this->request),
         ];
     }
 }

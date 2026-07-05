@@ -37,4 +37,9 @@ final class SkirClientException extends RuntimeException
             previous: $previous,
         );
     }
+
+    public static function unsupportedCodec(string $codec): self
+    {
+        return new self("Skir client codec [{$codec}] is not supported.");
+    }
 }

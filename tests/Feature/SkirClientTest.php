@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace LaravelSkir\Client\Tests\Feature;
 
+use LaravelSkir\Client\Codecs\SkirClientCodecs;
 use LaravelSkir\Client\Exceptions\SkirClientException;
 use LaravelSkir\Client\Http\SkirRpcRequest;
 use LaravelSkir\Client\SkirClient;
 use LaravelSkir\Client\Tests\TestCase;
+use LaravelSkir\Runtime\DenseJson;
 use LaravelSkir\Runtime\Field;
 use LaravelSkir\Runtime\MethodDescriptor;
 use LaravelSkir\Runtime\Type;
@@ -82,6 +84,98 @@ final class SkirClientTest extends TestCase
                 && $request->body()->all() === [
                     'method' => 'RenameUser',
                     'request' => [42, 'Maxim'],
+                ];
+        });
+    }
+
+    #[Test]
+    public function it_can_use_standard_json_for_readable_http_payloads(): void
+    {
+        $mockClient = new MockClient([
+            SkirRpcRequest::class => MockResponse::make([
+                'id' => 42,
+                'name' => 'Ruben',
+            ], 200),
+        ]);
+
+        $client = new SkirClient('https://example.com/api', codec: SkirClientCodecs::standardJson());
+        $client->withMockClient($mockClient);
+
+        $userType = Type::struct([
+            Field::value('id', 0, Type::int32()),
+            Field::value('name', 1, Type::string()),
+        ]);
+
+        $result = $client->invoke(
+            new MethodDescriptor('RenameUser', 1002, $userType, $userType),
+            [
+                'id' => 42,
+                'name' => 'Maxim',
+            ],
+        );
+
+        $this->assertSame([
+            'id' => 42,
+            'name' => 'Ruben',
+        ], $result);
+
+        $mockClient->assertSent(function (Request $request): bool {
+            return $request instanceof SkirRpcRequest
+                && $request->body()->all() === [
+                    'method' => 'RenameUser',
+                    'request' => [
+                        'id' => 42,
+                        'name' => 'Maxim',
+                    ],
+                ];
+        });
+    }
+
+    #[Test]
+    public function it_can_use_base64_encoded_dense_json_payloads(): void
+    {
+        $userType = Type::struct([
+            Field::value('id', 0, Type::int32()),
+            Field::value('name', 1, Type::string()),
+        ]);
+
+        $mockClient = new MockClient([
+            SkirRpcRequest::class => MockResponse::make(
+                json_encode(
+                    base64_encode(DenseJson::toJson($userType, [
+                        'id' => 42,
+                        'name' => 'Ruben',
+                    ])),
+                    JSON_THROW_ON_ERROR,
+                ),
+                200,
+            ),
+        ]);
+
+        $client = new SkirClient('https://example.com/api', codec: SkirClientCodecs::base64DenseJson());
+        $client->withMockClient($mockClient);
+
+        $result = $client->invoke(
+            new MethodDescriptor('RenameUser', 1002, $userType, $userType),
+            [
+                'id' => 42,
+                'name' => 'Maxim',
+            ],
+        );
+
+        $this->assertSame([
+            'id' => 42,
+            'name' => 'Ruben',
+        ], $result);
+
+        $mockClient->assertSent(function (Request $request) use ($userType): bool {
+            return $request instanceof SkirRpcRequest
+                && $request->body()->all() === [
+                    'method' => 'RenameUser',
+                    'request' => base64_encode(DenseJson::toJson($userType, [
+                        'id' => 42,
+                        'name' => 'Maxim',
+                    ])),
                 ];
         });
     }

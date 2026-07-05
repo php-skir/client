@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace LaravelSkir\Client;
 
 use Illuminate\Support\ServiceProvider;
+use LaravelSkir\Client\Codecs\SkirClientCodec;
+use LaravelSkir\Client\Codecs\SkirClientCodecs;
 use LaravelSkir\Client\Commands\GenerateClientCommand;
+use LaravelSkir\Client\Exceptions\SkirClientException;
 
 final class SkirClientServiceProvider extends ServiceProvider
 {
@@ -17,6 +20,7 @@ final class SkirClientServiceProvider extends ServiceProvider
             return new SkirClient(
                 baseUrl: (string) config('skir-client.base_url'),
                 endpoint: (string) config('skir-client.endpoint', '/'),
+                codec: $this->codecFromConfig((string) config('skir-client.codec', 'dense_json')),
             );
         });
     }
@@ -32,5 +36,15 @@ final class SkirClientServiceProvider extends ServiceProvider
                 GenerateClientCommand::class,
             ]);
         }
+    }
+
+    private function codecFromConfig(string $codec): SkirClientCodec
+    {
+        return match ($codec) {
+            'dense_json' => SkirClientCodecs::denseJson(),
+            'standard_json' => SkirClientCodecs::standardJson(),
+            'base64_dense_json' => SkirClientCodecs::base64DenseJson(),
+            default => throw SkirClientException::unsupportedCodec($codec),
+        };
     }
 }
