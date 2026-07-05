@@ -1,0 +1,76 @@
+{
+    "name": "laravel-skir/client",
+    "description": "Laravel SkirRPC client package powered by Saloon.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "php",
+        "rpc",
+        "saloon",
+        "serialization",
+        "skir"
+    ],
+    "homepage": "https://github.com/laravel-skir/client",
+    "support": {
+        "issues": "https://github.com/laravel-skir/client/issues",
+        "source": "https://github.com/laravel-skir/client"
+    },
+    "authors": [
+        {
+            "name": "Maxim Kerstens",
+            "email": "maxim.kerstens@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+        "laravel-skir/runtime": "^0.1@dev",
+        "saloonphp/saloon": "^3.0",
+        "symfony/process": "^6.4|^7.0|^8.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.29",
+        "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
+        "phpunit/phpunit": "^10.5|^11.5|^12.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "LaravelSkir\\Client\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LaravelSkir\\Client\\Tests\\": "tests/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../runtime",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LaravelSkir\\Client\\SkirClientServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-main": "0.1.x-dev"
+        }
+    },
+    "scripts": {
+        "format": "pint",
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
