@@ -52,6 +52,8 @@ The package includes an Artisan wrapper for the Skir compiler:
 php artisan skir:generate-client
 ```
 
+Use `skir-php-generator` for standard PHP DTOs or `skir-laravel-data-generator` for Spatie Laravel Data DTOs in your `skir.yml`.
+
 The command runs:
 
 ```bash
@@ -66,4 +68,4 @@ SKIR_CLIENT_SKIR_BIN=/absolute/path/to/node_modules/skir/dist/compiler.js
 SKIR_CLIENT_ROOT=/absolute/path/to/project
 ```
 
-Typed PHP objects and method descriptors are still produced by the Skir generator packages configured in `skir.yml`; this command just lets Laravel projects run that generation flow from Artisan.
+The command validates the configured project root and compiler file before spawning Node, then streams compiler output back through Artisan. Typed PHP objects, method descriptors, and typed RPC client adapters are produced by the Skir generator packages configured in `skir.yml`; this package provides the transport and the Laravel command to run that generation flow.
