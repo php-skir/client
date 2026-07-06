@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client\Tests\Feature;
+namespace Skir\Client\Tests\Feature;
 
 use CBOR\Decoder;
 use CBOR\Encoder;
 use CBOR\StringStream;
-use LaravelSkir\Client\Codecs\SkirClientCodecs;
-use LaravelSkir\Client\Exceptions\SkirClientException;
-use LaravelSkir\Client\Http\SkirRpcRequest;
-use LaravelSkir\Client\SkirClient;
-use LaravelSkir\Client\Tests\TestCase;
-use LaravelSkir\Runtime\DenseJson;
-use LaravelSkir\Runtime\Field;
-use LaravelSkir\Runtime\MethodDescriptor;
-use LaravelSkir\Runtime\Type;
 use PHPUnit\Framework\Attributes\Test;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
+use Skir\Client\Codecs\SkirClientCodecs;
+use Skir\Client\Exceptions\SkirClientException;
+use Skir\Client\Http\SkirRpcRequest;
+use Skir\Client\SkirClient;
+use Skir\Client\Tests\TestCase;
+use Skir\Runtime\DenseJson;
+use Skir\Runtime\Field;
+use Skir\Runtime\MethodDescriptor;
+use Skir\Runtime\Type;
 
 final class SkirClientTest extends TestCase
 {

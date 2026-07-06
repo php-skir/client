@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client\Tests;
+namespace Skir\Client\Tests;
 
-use LaravelSkir\Client\SkirClientServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Skir\Client\SkirClientServiceProvider;
 
 abstract class TestCase extends Orchestra
 {

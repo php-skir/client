@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client\Codecs;
+namespace Skir\Client\Codecs;
 
-use LaravelSkir\Runtime\DenseJson;
-use LaravelSkir\Runtime\MethodDescriptor;
+use Skir\Runtime\DenseJson;
+use Skir\Runtime\MethodDescriptor;
 
 final class DenseJsonCodec implements SkirClientCodec
 {

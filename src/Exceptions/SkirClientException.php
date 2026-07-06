@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client\Exceptions;
+namespace Skir\Client\Exceptions;
 
-use LaravelSkir\Runtime\MethodDescriptor;
 use RuntimeException;
 use Saloon\Http\Response;
+use Skir\Runtime\MethodDescriptor;
 use Throwable;
 
 final class SkirClientException extends RuntimeException

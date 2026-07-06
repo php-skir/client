@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client\Http;
+namespace Skir\Client\Http;
 
-use LaravelSkir\Client\Codecs\SkirClientCodec;
-use LaravelSkir\Runtime\MethodDescriptor;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Traits\Body\HasJsonBody;
+use Skir\Client\Codecs\SkirClientCodec;
+use Skir\Runtime\MethodDescriptor;
 
 final class SkirRpcRequest extends Request implements HasBody
 {

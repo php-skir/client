@@ -1,5 +1,5 @@
 {
-    "name": "laravel-skir/client",
+    "name": "php-skir/client",
     "description": "Laravel SkirRPC client package powered by Saloon.",
     "type": "library",
     "license": "MIT",
@@ -11,10 +11,10 @@
         "serialization",
         "skir"
     ],
-    "homepage": "https://github.com/laravel-skir/client",
+    "homepage": "https://github.com/php-skir/client",
     "support": {
-        "issues": "https://github.com/laravel-skir/client/issues",
-        "source": "https://github.com/laravel-skir/client"
+        "issues": "https://github.com/php-skir/client/issues",
+        "source": "https://github.com/php-skir/client"
     },
     "authors": [
         {
@@ -26,7 +26,7 @@
         "php": "^8.3",
         "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
         "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
-        "laravel-skir/runtime": "^0.1@dev",
+        "php-skir/runtime": "^0.1@dev",
         "saloonphp/saloon": "^4.0",
         "symfony/process": "^6.4|^7.0|^8.0"
     },
@@ -38,12 +38,12 @@
     },
     "autoload": {
         "psr-4": {
-            "LaravelSkir\\Client\\": "src/"
+            "Skir\\Client\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "LaravelSkir\\Client\\Tests\\": "tests/"
+            "Skir\\Client\\Tests\\": "tests/"
         }
     },
     "repositories": [
@@ -58,7 +58,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "LaravelSkir\\Client\\SkirClientServiceProvider"
+                "Skir\\Client\\SkirClientServiceProvider"
             ]
         },
         "branch-alias": {

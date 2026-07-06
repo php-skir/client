@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client\Codecs;
+namespace Skir\Client\Codecs;
 
-use LaravelSkir\Runtime\Cbor;
-use LaravelSkir\Runtime\MethodDescriptor;
+use Skir\Runtime\Cbor;
+use Skir\Runtime\MethodDescriptor;
 
 final class CborCodec implements SkirClientHttpCodec
 {

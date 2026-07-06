@@ -5,7 +5,7 @@ Laravel package for consuming SkirRPC services with Saloon.
 ## Installation
 
 ```bash
-composer require laravel-skir/client
+composer require php-skir/client
 ```
 
 Publish the config if you want Laravel container resolution:
@@ -26,7 +26,7 @@ Use generated `MethodDescriptor` objects from `skir-php-generator` or `skir-lara
 
 ```php
 use App\Skir\Admin\SkirMethods;
-use LaravelSkir\Client\SkirClient;
+use Skir\Client\SkirClient;
 
 $client = new SkirClient('https://example.com/api/skir');
 
@@ -50,7 +50,7 @@ Generated typed client adapters wrap this lower-level transport:
 ```php
 use App\Skir\Admin\GetUserRequestData;
 use App\Skir\Admin\SkirRpcClient;
-use LaravelSkir\Client\SkirClient;
+use Skir\Client\SkirClient;
 
 $client = new SkirRpcClient(app(SkirClient::class));
 
@@ -101,7 +101,7 @@ Dense JSON is the default and matches the default server endpoint:
 
 ```php
 use App\Skir\Admin\SkirRpcClient;
-use LaravelSkir\Client\SkirClient;
+use Skir\Client\SkirClient;
 
 $transport = new SkirClient('https://example.com', '/api/skir');
 $client = new SkirRpcClient($transport);
@@ -110,8 +110,8 @@ $client = new SkirRpcClient($transport);
 For readable JSON endpoints, configure both sides as standard JSON:
 
 ```php
-use LaravelSkir\Client\Codecs\SkirClientCodecs;
-use LaravelSkir\Client\SkirClient;
+use Skir\Client\Codecs\SkirClientCodecs;
+use Skir\Client\SkirClient;
 
 $transport = new SkirClient(
     baseUrl: 'https://example.com',

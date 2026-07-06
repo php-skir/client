@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client\Tests\Feature;
+namespace Skir\Client\Tests\Feature;
 
-use LaravelSkir\Client\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Skir\Client\Tests\TestCase;
 
 final class GenerateClientCommandTest extends TestCase
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client\Codecs;
+namespace Skir\Client\Codecs;
 
-use LaravelSkir\Client\Exceptions\SkirClientException;
-use LaravelSkir\Runtime\Cbor;
+use Skir\Client\Exceptions\SkirClientException;
+use Skir\Runtime\Cbor;
 
 final class SkirClientCodecs
 {

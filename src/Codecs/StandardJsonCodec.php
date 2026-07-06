@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client\Codecs;
+namespace Skir\Client\Codecs;
 
 use JsonException;
-use LaravelSkir\Runtime\Exceptions\SkirRuntimeException;
-use LaravelSkir\Runtime\MethodDescriptor;
+use Skir\Runtime\Exceptions\SkirRuntimeException;
+use Skir\Runtime\MethodDescriptor;
 
 final class StandardJsonCodec implements SkirClientCodec
 {

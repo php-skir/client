@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client;
+namespace Skir\Client;
 
-use LaravelSkir\Client\Codecs\DenseJsonCodec;
-use LaravelSkir\Client\Codecs\SkirClientCodec;
-use LaravelSkir\Client\Codecs\SkirClientHttpCodec;
-use LaravelSkir\Client\Exceptions\SkirClientException;
-use LaravelSkir\Client\Http\SkirBinaryRpcRequest;
-use LaravelSkir\Client\Http\SkirConnector;
-use LaravelSkir\Client\Http\SkirRpcRequest;
-use LaravelSkir\Runtime\Exceptions\SkirRuntimeException;
-use LaravelSkir\Runtime\MethodDescriptor;
 use Saloon\Http\Faking\MockClient;
+use Skir\Client\Codecs\DenseJsonCodec;
+use Skir\Client\Codecs\SkirClientCodec;
+use Skir\Client\Codecs\SkirClientHttpCodec;
+use Skir\Client\Exceptions\SkirClientException;
+use Skir\Client\Http\SkirBinaryRpcRequest;
+use Skir\Client\Http\SkirConnector;
+use Skir\Client\Http\SkirRpcRequest;
+use Skir\Runtime\Exceptions\SkirRuntimeException;
+use Skir\Runtime\MethodDescriptor;
 
 final class SkirClient
 {

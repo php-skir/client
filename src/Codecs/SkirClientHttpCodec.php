@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client\Codecs;
+namespace Skir\Client\Codecs;
 
-use LaravelSkir\Runtime\MethodDescriptor;
+use Skir\Runtime\MethodDescriptor;
 
 interface SkirClientHttpCodec extends SkirClientCodec
 {

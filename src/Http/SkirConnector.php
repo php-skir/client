@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client\Http;
+namespace Skir\Client\Http;
 
 use Saloon\Http\Connector;
 

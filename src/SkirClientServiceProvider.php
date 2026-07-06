@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace LaravelSkir\Client;
+namespace Skir\Client;
 
 use Illuminate\Support\ServiceProvider;
-use LaravelSkir\Client\Codecs\SkirClientCodec;
-use LaravelSkir\Client\Codecs\SkirClientCodecs;
-use LaravelSkir\Client\Commands\GenerateClientCommand;
-use LaravelSkir\Client\Exceptions\SkirClientException;
+use Skir\Client\Codecs\SkirClientCodec;
+use Skir\Client\Codecs\SkirClientCodecs;
+use Skir\Client\Commands\GenerateClientCommand;
+use Skir\Client\Exceptions\SkirClientException;
 
 final class SkirClientServiceProvider extends ServiceProvider
 {
