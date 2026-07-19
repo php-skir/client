@@ -1,5 +1,11 @@
 # Laravel Skir Client
 
+[![Tests](https://github.com/php-skir/client/actions/workflows/tests.yml/badge.svg)](https://github.com/php-skir/client/actions/workflows/tests.yml)
+[![Coverage](https://raw.githubusercontent.com/php-skir/client/badges/coverage.svg)](https://github.com/php-skir/client/actions/workflows/tests.yml)
+[![Composer](https://img.shields.io/packagist/v/php-skir/client?label=composer&logo=composer)](https://packagist.org/packages/php-skir/client)
+[![PHP](https://img.shields.io/badge/PHP-%5E8.3-777BB4?logo=php&logoColor=white)](https://packagist.org/packages/php-skir/client)
+[![License](https://img.shields.io/github/license/php-skir/client)](LICENSE)
+
 Laravel package for consuming SkirRPC services with Saloon.
 
 ## Installation
