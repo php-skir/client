@@ -1,3 +1,5 @@
+![Laravel Skir Client](art/banner.png)
+
 # Laravel Skir Client
 
 [![Tests](https://github.com/php-skir/client/actions/workflows/tests.yml/badge.svg)](https://github.com/php-skir/client/actions/workflows/tests.yml)
@@ -6,155 +8,89 @@
 [![PHP](https://img.shields.io/badge/PHP-%5E8.3-777BB4?logo=php&logoColor=white)](https://packagist.org/packages/php-skir/client)
 [![License](https://img.shields.io/github/license/php-skir/client)](LICENSE)
 
-Laravel package for consuming SkirRPC services with Saloon.
+Laravel package for calling SkirRPC services through generated typed clients and Saloon.
 
-## Installation
+## Features
+
+- Generate typed RPC clients from Skir schemas with the [client generation guide](docs/generating-clients.md).
+- Use standard PHP objects, [Laravel Data](docs/laravel-data.md), or [Simple Data Objects](docs/simple-data-objects.md).
+- Configure Laravel container resolution and matching wire codecs with the [configuration and codecs guide](docs/configuration-and-codecs.md).
+- [Handle failures and test without network requests](docs/error-handling-and-testing.md).
+
+## Quick start
+
+Install the client and standard PHP generator:
 
 ```bash
 composer require php-skir/client
+npm install --save-dev skir skir-php-generator
 ```
 
-Publish the config if you want Laravel container resolution:
+Create `skir-src/admin/users.skir`:
 
-```bash
-php artisan vendor:publish --tag=skir-client-config
+```skir
+struct GetUserRequest {
+  user_id: int32;
+}
+
+struct User {
+  user_id: int32;
+  name: string;
+}
+
+method GetUser(GetUserRequest): User = 3180856469;
 ```
 
-```env
-SKIR_CLIENT_BASE_URL=https://example.com/api/skir
-SKIR_CLIENT_ENDPOINT=/
-SKIR_CLIENT_CODEC=dense_json
-```
-
-## Usage
-
-Use generated `MethodDescriptor` objects from `skir-php-generator` or `skir-laravel-data-generator`:
-
-```php
-use App\Skir\Admin\SkirMethods;
-use Skir\Client\SkirClient;
-
-$client = new SkirClient('https://example.com/api/skir');
-
-$user = $client->invoke(
-    SkirMethods::getUser(),
-    [
-        'id' => 42,
-        'name' => 'Maxim',
-    ],
-);
-```
-
-In Laravel, resolve the configured client from the container:
-
-```php
-$user = app(SkirClient::class)->invoke(SkirMethods::getUser(), $payload);
-```
-
-Generated typed client adapters wrap this lower-level transport:
-
-```php
-use App\Skir\Admin\GetUserRequestData;
-use App\Skir\Admin\SkirRpcClient;
-use Skir\Client\SkirClient;
-
-$client = new SkirRpcClient(app(SkirClient::class));
-
-$user = $client->getUser(new GetUserRequestData(
-    userId: 42,
-));
-```
-
-## Generation
-
-The package includes an Artisan wrapper for the Skir compiler:
-
-```bash
-php artisan skir:generate-client
-```
-
-Use `skir-php-generator` for standard PHP DTOs or `skir-laravel-data-generator` for Spatie Laravel Data DTOs in your `skir.yml`.
-
-Example `skir.yml` for Laravel Data clients:
+Configure the root `skir.yml`:
 
 ```yaml
 generators:
-  - mod: skir-laravel-data-generator
-    outDir: app/SkirGenerated
+  - mod: skir-php-generator
+    outDir: skir/skirout
     config:
-      namespace: App\Skir
+      namespace: Skir
 ```
 
-The command runs:
+Skir owns the output directory and may replace its contents during generation.
+
+Generate the client, configure Composer autoloading, and publish the Laravel config:
 
 ```bash
-node node_modules/skir/dist/compiler.js gen --root <project-root>
+npx skir gen
+npx skir-php-generator configure-composer
+composer dump-autoload
+php artisan vendor:publish --tag=skir-client-config
 ```
 
-Configure the executable paths with:
+Configure the server endpoint and matching wire codec:
 
-```env
-SKIR_CLIENT_NODE=node
-SKIR_CLIENT_SKIR_BIN=/absolute/path/to/node_modules/skir/dist/compiler.js
-SKIR_CLIENT_ROOT=/absolute/path/to/project
-```
-
-The command validates the configured project root and compiler file before spawning Node, then streams compiler output back through Artisan. Typed PHP objects, method descriptors, and typed RPC client adapters are produced by the Skir generator packages configured in `skir.yml`; this package provides the transport and the Laravel command to run that generation flow.
-
-## Codecs
-
-Dense JSON is the default and matches the default server endpoint:
-
-```php
-use App\Skir\Admin\SkirRpcClient;
-use Skir\Client\SkirClient;
-
-$transport = new SkirClient('https://example.com', '/api/skir');
-$client = new SkirRpcClient($transport);
-```
-
-For readable JSON endpoints, configure both sides as standard JSON:
-
-```php
-use Skir\Client\Codecs\SkirClientCodecs;
-use Skir\Client\SkirClient;
-
-$transport = new SkirClient(
-    baseUrl: 'https://example.com',
-    endpoint: '/api/skir',
-    codec: SkirClientCodecs::standardJson(),
-);
-```
-
-For base64-encoded dense JSON endpoints:
-
-```php
-$transport = new SkirClient(
-    baseUrl: 'https://example.com',
-    endpoint: '/api/skir',
-    codec: SkirClientCodecs::base64DenseJson(),
-);
-```
-
-For binary CBOR endpoints:
-
-```php
-$transport = new SkirClient(
-    baseUrl: 'https://example.com',
-    endpoint: '/api/skir',
-    codec: SkirClientCodecs::cbor(),
-);
-```
-
-CBOR support is optional. Install `spomky-labs/cbor-php` in the consuming app before using `SkirClientCodecs::cbor()` or `SKIR_CLIENT_CODEC=cbor`.
-
-Container configuration supports:
-
-```env
+```dotenv
+SKIR_CLIENT_BASE_URL=https://api.example.test
+SKIR_CLIENT_ENDPOINT=/api/skir
 SKIR_CLIENT_CODEC=dense_json
-SKIR_CLIENT_CODEC=standard_json
-SKIR_CLIENT_CODEC=base64_dense_json
-SKIR_CLIENT_CODEC=cbor
 ```
 
-The selected client codec must match the server endpoint codec.
+Call the service through the generated typed client:
+
+```php
+use Skir\Admin\GetUserRequest;
+use Skir\Admin\SkirRpcClient;
+use Skir\Client\SkirClient as TransportSkirClient;
+
+$client = new SkirRpcClient(app(TransportSkirClient::class));
+$user = $client->getUser(new GetUserRequest(userId: 42));
+
+echo $user->name;
+```
+
+## Generator alternatives
+
+Standard PHP is the dependency-light baseline. Use [`skir-laravel-data-generator`](docs/laravel-data.md) for Laravel Data or [`skir-simple-data-objects-generator`](docs/simple-data-objects.md) for Simple Data Objects.
+
+## Documentation
+
+- [Generating clients](docs/generating-clients.md)
+- [Laravel Data](docs/laravel-data.md)
+- [Simple Data Objects](docs/simple-data-objects.md)
+- [Configuration and codecs](docs/configuration-and-codecs.md)
+- [Error handling and testing](docs/error-handling-and-testing.md)
