@@ -87,6 +87,72 @@ jobs:
         run: composer test
         working-directory: client
 
+  boost-assets:
+    name: Laravel Boost assets
+    needs: tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout client
+        uses: actions/checkout@v7
+        with:
+          path: client
+
+      - name: Checkout runtime
+        uses: actions/checkout@v7
+        with:
+          repository: php-skir/runtime
+          path: runtime
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate Composer archive assets
+        working-directory: client
+        run: |
+          composer archive --format=zip --dir=build/archive
+          unzip -Z1 build/archive/*.zip > build/archive-files.txt
+          for asset in \
+            resources/boost/guidelines/core.blade.php \
+            resources/boost/skills/skir-client-development/SKILL.md \
+            resources/boost/skills/skir-client-development/references/generation-and-configuration.md \
+            resources/boost/skills/skir-client-development/references/invocation-errors-and-testing.md
+          do
+            grep -Fxq "$asset" build/archive-files.txt
+          done
+
+      - name: Create Laravel 13 consumer
+        run: composer create-project laravel/laravel:^13.0 boost-client --prefer-dist --no-interaction --no-progress
+
+      - name: Install copied client package and Boost
+        working-directory: boost-client
+        run: |
+          composer config minimum-stability dev
+          composer config prefer-stable true
+          composer config repositories.runtime '{"type":"path","url":"../runtime","options":{"symlink":false}}' --json
+          composer config repositories.client '{"type":"path","url":"../client","options":{"symlink":false}}' --json
+          composer require php-skir/client:dev-main --no-interaction --no-progress
+          composer require laravel/boost:^2.4 --dev --no-interaction --no-progress
+          test ! -L vendor/php-skir/client
+
+      - name: Install and verify client assistance
+        working-directory: boost-client
+        run: |
+          php -r 'file_put_contents("boost.json", json_encode(["agents" => ["codex"], "guidelines" => true, "mcp" => false, "packages" => ["php-skir/client"], "skills" => ["skir-client-development"]], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES).PHP_EOL);'
+          php artisan boost:update --no-interaction
+          grep -Fq 'php-skir/client' AGENTS.md
+          test -f .agents/skills/skir-client-development/SKILL.md
+          test -f .agents/skills/skir-client-development/references/generation-and-configuration.md
+          test -f .agents/skills/skir-client-development/references/invocation-errors-and-testing.md
+          test ! -e .agents/skills/skir-server-development
+          test "$(find .agents/skills -mindepth 1 -maxdepth 1 -type d -name 'skir-*' | wc -l)" -eq 1
+
   coverage:
     name: Coverage
     needs: tests
