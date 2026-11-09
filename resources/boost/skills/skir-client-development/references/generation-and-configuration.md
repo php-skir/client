@@ -16,7 +16,9 @@ npx skir-php-generator configure-composer
 composer dump-autoload
 ```
 
-`configure-composer` adds the generated PSR-4 mapping but does not refresh Composer autoloading.
+Run `configure-composer` from the generator you use (`skir-php-generator`, `skir-laravel-data-generator`, or
+`skir-simple-data-objects-generator`). It adds the generated PSR-4 mapping but does not refresh Composer
+autoloading.
 
 Laravel applications may replace only `npx skir gen` with:
 
@@ -57,7 +59,3 @@ SKIR_CLIENT_ENDPOINT=/api/skir
 
 `SKIR_CLIENT_BASE_URL` is required. `SKIR_CLIENT_ENDPOINT` defaults to `/`; do not duplicate the
 endpoint path in the base URL.
-
-Do not substitute repository-local wrapper commands or machine-specific absolute paths in reusable
-package guidance. Use the consuming application's documented runtime surface when executing these
-commands.

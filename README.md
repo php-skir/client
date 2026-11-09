@@ -8,7 +8,9 @@
 [![PHP](https://img.shields.io/badge/PHP-%5E8.3-777BB4?logo=php&logoColor=white)](https://packagist.org/packages/php-skir/client)
 [![License](https://img.shields.io/github/license/php-skir/client)](LICENSE)
 
-Laravel package for calling SkirRPC services through generated typed clients and Saloon.
+Call [SkirRPC](https://skir.build/docs/skirrpc) services from Laravel through generated, typed PHP clients. Requests go out over [Saloon](https://docs.saloon.dev/) using the standard SkirRPC protocol, so the server can be [`php-skir/server`](https://github.com/php-skir/server) or a Skir service written in any other language.
+
+**Requirements:** PHP 8.3+, Laravel 12 or 13, and Node.js for the Skir compiler.
 
 ## Features
 
@@ -56,7 +58,7 @@ Skir owns the output directory and may replace its contents during generation.
 Generate the client, configure Composer autoloading, and publish the Laravel config:
 
 ```bash
-npx skir gen
+npx skir gen                               # or: php artisan skir:generate-client
 npx skir-php-generator configure-composer
 composer dump-autoload
 php artisan vendor:publish --tag=skir-client-config

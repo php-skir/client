@@ -67,7 +67,7 @@ $user = $client->getUser(new GetUserRequestData(userId: 42));
 echo $user->name;
 ```
 
-The direct `new GetUserRequestData(...)` call is a trusted construction path. The generated client serializes that existing request with `toSkirArray()` without revalidating it, then hydrates the response as `UserData` before returning it. When request data starts as an untrusted raw array, use `makeFromSkirPayload()` as shown below.
+The direct `new GetUserRequestData(...)` call is not validated. The generated client serializes that existing request with `toSkirArray()` without revalidating it, then hydrates the response as `UserData` before returning it. When request data starts as an untrusted raw array, use `makeFromSkirPayload()` as shown below.
 
 ## Hydrate raw client data safely
 

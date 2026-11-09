@@ -19,7 +19,7 @@ decodes a dense JSON response, so it works against any SkirRPC server.
 | Request encoding fails | `SkirRuntimeException` propagates directly | Verify generated request values |
 | DNS, connection, or TLS fails | Saloon `FatalRequestException` propagates with no response | Inspect URL, DNS, TLS, and connectivity |
 
-Responses Saloon does not classify as failed, including redirects by default, continue to decoding.
+Redirects are followed by Guzzle; other responses Saloon does not classify as failed are decoded.
 Catching only `SkirClientException` does not catch encoding or network failures.
 
 ## Test without network access

@@ -20,16 +20,6 @@ jobs:
       matrix:
         include:
           - php: "8.3"
-            laravel: "10"
-            testbench: "^8.0"
-            phpunit: "^10.5"
-            allow_insecure: true
-          - php: "8.3"
-            laravel: "11"
-            testbench: "^9.0"
-            phpunit: "^11.5"
-            allow_insecure: true
-          - php: "8.3"
             laravel: "12"
             testbench: "^10.0"
             phpunit: "^11.5"
