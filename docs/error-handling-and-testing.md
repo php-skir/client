@@ -15,7 +15,7 @@ The exception boundary is deliberately narrow:
 - Only a codec-thrown `SkirRuntimeException` during response decoding is wrapped as an invalid-response `SkirClientException`.
 - A `SkirRuntimeException` thrown while encoding the request propagates directly.
 - DNS, connection, and TLS failures propagate as `Saloon\Exceptions\Request\FatalRequestException` and do not have a response.
-- An unsupported configured codec or a missing optional CBOR dependency throws `SkirClientException` with both `method` and `response` set to `null`.
+- An unsupported configured codec throws `SkirClientException` with both `method` and `response` set to `null`.
 
 The following handler is specifically for the `SkirClientException` paths. It does not catch direct request-encoding or Saloon fatal-request exceptions:
 
@@ -151,7 +151,5 @@ final class SkirRpcClientTest extends TestCase
 ```
 
 `MockClient` matches the configured response to `SkirRpcRequest`, records the outgoing request, and lets `assertSent()` verify the request class, endpoint, method name, and encoded body. `assertSentCount(1)` also guards against duplicate calls. No network call is made.
-
-When the application selects the binary CBOR codec, mock and assert `Skir\Client\Http\SkirBinaryRpcRequest` instead. Return an actual CBOR-encoded value in the `MockResponse`, such as one produced by `Skir\Runtime\Cbor::encodeValue()` for the generated method's response type. Assert that the request body is a CBOR binary string, decode it when the envelope needs inspection, and assert that both `Accept` and `Content-Type` are `application/cbor` rather than applying the JSON array assertion shown above.
 
 See [Configuration and codecs](configuration-and-codecs.md) for transport setup and codec selection, and [Generating clients](generating-clients.md) for the schema and generated classes used above.

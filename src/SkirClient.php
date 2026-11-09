@@ -7,9 +7,7 @@ namespace Skir\Client;
 use Saloon\Http\Faking\MockClient;
 use Skir\Client\Codecs\DenseJsonCodec;
 use Skir\Client\Codecs\SkirClientCodec;
-use Skir\Client\Codecs\SkirClientHttpCodec;
 use Skir\Client\Exceptions\SkirClientException;
-use Skir\Client\Http\SkirBinaryRpcRequest;
 use Skir\Client\Http\SkirConnector;
 use Skir\Client\Http\SkirRpcRequest;
 use Skir\Runtime\Exceptions\SkirRuntimeException;
@@ -36,11 +34,9 @@ final class SkirClient
 
     public function invoke(MethodDescriptor $descriptor, mixed $request): mixed
     {
-        $rpcRequest = $this->codec instanceof SkirClientHttpCodec
-            ? new SkirBinaryRpcRequest($descriptor, $request, $this->codec, $this->endpoint)
-            : new SkirRpcRequest($descriptor, $request, $this->codec, $this->endpoint);
-
-        $response = $this->connector->send($rpcRequest);
+        $response = $this->connector->send(
+            new SkirRpcRequest($descriptor, $request, $this->codec, $this->endpoint),
+        );
 
         if ($response->failed()) {
             throw SkirClientException::failedResponse($descriptor, $response);

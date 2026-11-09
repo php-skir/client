@@ -26,15 +26,14 @@
         "php": "^8.3",
         "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
         "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
-        "php-skir/runtime": "^0.1@dev",
+        "php-skir/runtime": "^0.1@dev|^0.2@dev",
         "saloonphp/saloon": "^4.0",
         "symfony/process": "^6.4|^7.0|^8.0"
     },
     "require-dev": {
         "laravel/pint": "^1.29",
         "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
-        "phpunit/phpunit": "^10.5|^11.5|^12.5",
-        "spomky-labs/cbor-php": "^3.2"
+        "phpunit/phpunit": "^10.5|^11.5|^12.5"
     },
     "autoload": {
         "psr-4": {
@@ -62,15 +61,12 @@
             ]
         },
         "branch-alias": {
-            "dev-main": "0.1.x-dev"
+            "dev-main": "0.2.x-dev"
         }
     },
     "scripts": {
         "format": "pint",
         "test": "phpunit"
-    },
-    "suggest": {
-        "spomky-labs/cbor-php": "Required when using SkirClientCodecs::cbor() or SKIR_CLIENT_CODEC=cbor."
     },
     "config": {
         "sort-packages": true

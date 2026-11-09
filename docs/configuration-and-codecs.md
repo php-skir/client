@@ -50,11 +50,6 @@ $base64DenseJson = new SkirClient(
     endpoint: '/api/skir',
     codec: SkirClientCodecs::base64DenseJson(),
 );
-$cbor = new SkirClient(
-    baseUrl: 'https://api.example.test',
-    endpoint: '/api/skir',
-    codec: SkirClientCodecs::cbor(),
-);
 ```
 
 The first two clients use the same dense JSON codec; the second selects its factory explicitly.
@@ -68,14 +63,7 @@ The configured codec must match the codec exposed by the server endpoint.
 | `dense_json` | Compact, descriptor-driven JSON values; structs use positional arrays. |
 | `standard_json` | Readable JSON where structs use named object fields and primitives remain primitive values. |
 | `base64_dense_json` | A dense JSON payload carried inside a base64-encoded JSON string. |
-| `cbor` | Binary request and response bodies using `application/cbor`. |
 
-CBOR support is optional. Install its dependency before selecting `cbor`:
-
-```bash
-composer require spomky-labs/cbor-php
-```
-
-Selecting `cbor` without that package throws a `SkirClientException`. An unknown configured codec value also throws `SkirClientException` when Laravel resolves the client.
+An unknown configured codec value throws `SkirClientException` when Laravel resolves the client.
 
 See [Generating clients](generating-clients.md) for the typed generation workflow and [Error handling and testing](error-handling-and-testing.md) for transport failure handling and mocks.

@@ -137,7 +137,7 @@ jobs:
           composer config prefer-stable true
           composer config repositories.runtime '{"type":"path","url":"../runtime","options":{"symlink":false}}' --json
           composer config repositories.client '{"type":"path","url":"../client","options":{"symlink":false}}' --json
-          composer require php-skir/client:dev-main --no-interaction --no-progress
+          composer require "php-skir/client:*@dev" --no-interaction --no-progress
           composer require laravel/boost:^2.4 --dev --no-interaction --no-progress
           test ! -L vendor/php-skir/client
 

@@ -12,10 +12,8 @@ The client and server must use the same codec:
 - `dense_json`: descriptor-driven JSON; structs are positional arrays.
 - `standard_json`: readable JSON objects with named struct fields.
 - `base64_dense_json`: dense JSON inside a base64-encoded JSON string.
-- `cbor`: binary `application/cbor`; requires `spomky-labs/cbor-php`.
 
-CBOR is serialization, not privacy or encryption. A missing CBOR dependency or unsupported configured
-codec throws `SkirClientException` while Laravel resolves the transport.
+An unsupported configured codec throws `SkirClientException` while Laravel resolves the transport.
 
 ## Distinguish failures
 
@@ -25,7 +23,7 @@ codec throws `SkirClientException` while Laravel resolves the transport.
 | Successful HTTP response cannot be decoded | `SkirClientException` with method, null response, previous `SkirRuntimeException` | Verify response shape and matching codec |
 | Request encoding fails | `SkirRuntimeException` propagates directly | Verify generated request values and codec input |
 | DNS, connection, or TLS fails | Saloon `FatalRequestException` propagates with no response | Inspect URL, DNS, TLS, and connectivity |
-| Codec is unsupported or optional CBOR support is absent | `SkirClientException` with null method and response | Correct config or install the optional dependency |
+| Codec is unsupported | `SkirClientException` with null method and response | Correct the configured codec |
 
 Responses Saloon does not classify as failed, including redirects by default, continue to decoding.
 Catching only `SkirClientException` does not catch encoding or network failures.
@@ -54,5 +52,4 @@ $mockClient->assertSentCount(1);
 
 Cover the typed happy path, failed HTTP response, malformed successful response, and any
 application-specific encoding/network policy. Assert request class, endpoint, RPC method, encoded
-body, and send count. JSON codecs use `SkirRpcRequest`; CBOR uses `SkirBinaryRpcRequest`, genuine
-CBOR-encoded mock bodies, and `Accept` plus `Content-Type` assertions for `application/cbor`.
+body, and send count. Mock and assert `SkirRpcRequest`.
