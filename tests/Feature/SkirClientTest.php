@@ -12,6 +12,7 @@ use Skir\Client\Exceptions\SkirClientException;
 use Skir\Client\Http\SkirRpcRequest;
 use Skir\Client\SkirClient;
 use Skir\Client\Tests\TestCase;
+use Skir\Client\WireFormat;
 use Skir\Runtime\Field;
 use Skir\Runtime\MethodDescriptor;
 use Skir\Runtime\Type;
@@ -123,5 +124,41 @@ final class SkirClientTest extends TestCase
             new MethodDescriptor('Square', 1001, Type::float32(), Type::float32()),
             5.0,
         );
+    }
+
+    #[Test]
+    public function it_can_exchange_readable_json(): void
+    {
+        $mockClient = new MockClient([
+            SkirRpcRequest::class => MockResponse::make("{\n  \"id\": 42,\n  \"name\": \"Ruben\"\n}", 200, [
+                'Content-Type' => 'application/json',
+            ]),
+        ]);
+
+        $client = new SkirClient('https://example.com/api', format: WireFormat::Readable);
+        $client->withMockClient($mockClient);
+
+        $userType = Type::struct([
+            Field::value('id', 0, Type::int32()),
+            Field::value('name', 1, Type::string()),
+        ]);
+
+        $result = $client->invoke(
+            new MethodDescriptor('RenameUser', 1002, $userType, $userType),
+            [
+                'id' => 42,
+                'name' => 'Maxim',
+            ],
+        );
+
+        $this->assertSame([
+            'id' => 42,
+            'name' => 'Ruben',
+        ], $result);
+
+        $mockClient->assertSent(function (Request $request): bool {
+            return $request instanceof SkirRpcRequest
+                && $request->body()->all() === "RenameUser:1002:readable:{\n  \"id\": 42,\n  \"name\": \"Maxim\"\n}";
+        });
     }
 }

@@ -21,7 +21,13 @@ final class SkirClientServiceProvider extends ServiceProvider
                 throw SkirClientException::missingBaseUrl();
             }
 
-            return new SkirClient($baseUrl, (string) config('skir-client.endpoint'));
+            $format = (string) config('skir-client.format');
+
+            return new SkirClient(
+                $baseUrl,
+                (string) config('skir-client.endpoint'),
+                WireFormat::tryFrom($format) ?? throw SkirClientException::unsupportedFormat($format),
+            );
         });
     }
 

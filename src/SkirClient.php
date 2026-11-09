@@ -19,6 +19,7 @@ final class SkirClient
     public function __construct(
         string $baseUrl,
         private readonly string $endpoint = '/',
+        private readonly WireFormat $format = WireFormat::Dense,
     ) {
         $this->connector = new SkirConnector($baseUrl);
     }
@@ -33,7 +34,7 @@ final class SkirClient
     public function invoke(MethodDescriptor $descriptor, mixed $request): mixed
     {
         $response = $this->connector->send(
-            new SkirRpcRequest($descriptor, $request, $this->endpoint),
+            new SkirRpcRequest($descriptor, $request, $this->endpoint, $this->format),
         );
 
         if ($response->failed()) {

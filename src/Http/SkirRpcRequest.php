@@ -8,8 +8,10 @@ use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
 use Saloon\Traits\Body\HasStringBody;
+use Skir\Client\WireFormat;
 use Skir\Runtime\DenseJson;
 use Skir\Runtime\MethodDescriptor;
+use Skir\Runtime\ReadableJson;
 
 final class SkirRpcRequest extends Request implements HasBody
 {
@@ -21,6 +23,7 @@ final class SkirRpcRequest extends Request implements HasBody
         public readonly MethodDescriptor $descriptor,
         public readonly mixed $request,
         private readonly string $endpoint = '/',
+        public readonly WireFormat $format = WireFormat::Dense,
     ) {}
 
     public function resolveEndpoint(): string
@@ -42,7 +45,15 @@ final class SkirRpcRequest extends Request implements HasBody
 
     protected function defaultBody(): string
     {
-        $requestJson = DenseJson::toJson($this->descriptor->requestType, $this->request);
+        $requestType = $this->descriptor->requestType;
+
+        if ($this->format === WireFormat::Readable) {
+            $requestJson = ReadableJson::toJson($requestType, $this->request);
+
+            return "{$this->descriptor->name}:{$this->descriptor->number}:readable:{$requestJson}";
+        }
+
+        $requestJson = DenseJson::toJson($requestType, $this->request);
 
         return "{$this->descriptor->name}:{$this->descriptor->number}::{$requestJson}";
     }
