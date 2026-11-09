@@ -53,11 +53,10 @@ Set:
 ```dotenv
 SKIR_CLIENT_BASE_URL=https://api.example.test
 SKIR_CLIENT_ENDPOINT=/api/skir
-SKIR_CLIENT_CODEC=dense_json
 ```
 
 `SKIR_CLIENT_BASE_URL` is required. `SKIR_CLIENT_ENDPOINT` defaults to `/`; do not duplicate the
-endpoint path in the base URL. `SKIR_CLIENT_CODEC` defaults to `dense_json` and must match the server.
+endpoint path in the base URL.
 
 Do not substitute repository-local wrapper commands or machine-specific absolute paths in reusable
 package guidance. Use the consuming application's documented runtime surface when executing these

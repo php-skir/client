@@ -12,7 +12,7 @@ typed clients over direct transport calls.
 
 - Generation, generator configuration, Composer autoloading, Laravel config, or environment setup:
   read [generation and configuration](references/generation-and-configuration.md).
-- Invocation, codecs, exceptions, debugging, recovery, or network-free tests: read
+- Invocation, exceptions, debugging, recovery, or network-free tests: read
   [invocation, errors, and testing](references/invocation-errors-and-testing.md).
 - Tasks spanning both areas: read both references before changing code.
 

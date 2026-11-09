@@ -12,10 +12,9 @@ A 2xx response that cannot be decoded also throws `SkirClientException`, but wit
 
 The exception boundary is deliberately narrow:
 
-- Only a codec-thrown `SkirRuntimeException` during response decoding is wrapped as an invalid-response `SkirClientException`.
+- Only a `SkirRuntimeException` thrown while decoding the response is wrapped as an invalid-response `SkirClientException`.
 - A `SkirRuntimeException` thrown while encoding the request propagates directly.
 - DNS, connection, and TLS failures propagate as `Saloon\Exceptions\Request\FatalRequestException` and do not have a response.
-- An unsupported configured codec throws `SkirClientException` with both `method` and `response` set to `null`.
 
 The following handler is specifically for the `SkirClientException` paths. It does not catch direct request-encoding or Saloon fatal-request exceptions:
 
@@ -68,7 +67,6 @@ final class SkirRpcClientTest extends TestCase
     {
         config()->set('skir-client.base_url', 'https://api.example.test');
         config()->set('skir-client.endpoint', '/api/skir');
-        config()->set('skir-client.codec', 'dense_json');
 
         $transport = app(TransportSkirClient::class);
         $mockClient = new MockClient([
@@ -87,10 +85,8 @@ final class SkirRpcClientTest extends TestCase
         $mockClient->assertSent(function (Request $request): bool {
             return $request instanceof SkirRpcRequest
                 && $request->resolveEndpoint() === '/api/skir'
-                && $request->body()->all() === [
-                    'method' => 'GetUser',
-                    'request' => [42],
-                ];
+                && $request->descriptor->name === 'GetUser'
+                && $request->body()->all() === 'GetUser:'.$request->descriptor->number.'::[42]';
         });
         $mockClient->assertSentCount(1);
     }
@@ -100,7 +96,6 @@ final class SkirRpcClientTest extends TestCase
     {
         config()->set('skir-client.base_url', 'https://api.example.test');
         config()->set('skir-client.endpoint', '/api/skir');
-        config()->set('skir-client.codec', 'dense_json');
 
         $transport = app(TransportSkirClient::class);
         $mockClient = new MockClient([
@@ -125,7 +120,6 @@ final class SkirRpcClientTest extends TestCase
     {
         config()->set('skir-client.base_url', 'https://api.example.test');
         config()->set('skir-client.endpoint', '/api/skir');
-        config()->set('skir-client.codec', 'dense_json');
 
         $transport = app(TransportSkirClient::class);
         $mockClient = new MockClient([
@@ -152,4 +146,4 @@ final class SkirRpcClientTest extends TestCase
 
 `MockClient` matches the configured response to `SkirRpcRequest`, records the outgoing request, and lets `assertSent()` verify the request class, endpoint, method name, and encoded body. `assertSentCount(1)` also guards against duplicate calls. No network call is made.
 
-See [Configuration and codecs](configuration-and-codecs.md) for transport setup and codec selection, and [Generating clients](generating-clients.md) for the schema and generated classes used above.
+See [Configuration](configuration.md) for transport setup, and [Generating clients](generating-clients.md) for the schema and generated classes used above.

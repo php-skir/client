@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Skir\Client;
 
 use Saloon\Http\Faking\MockClient;
-use Skir\Client\Codecs\DenseJsonCodec;
-use Skir\Client\Codecs\SkirClientCodec;
 use Skir\Client\Exceptions\SkirClientException;
 use Skir\Client\Http\SkirConnector;
 use Skir\Client\Http\SkirRpcRequest;
+use Skir\Runtime\DenseJson;
 use Skir\Runtime\Exceptions\SkirRuntimeException;
 use Skir\Runtime\MethodDescriptor;
 
@@ -20,7 +19,6 @@ final class SkirClient
     public function __construct(
         string $baseUrl,
         private readonly string $endpoint = '/',
-        private readonly SkirClientCodec $codec = new DenseJsonCodec,
     ) {
         $this->connector = new SkirConnector($baseUrl);
     }
@@ -35,7 +33,7 @@ final class SkirClient
     public function invoke(MethodDescriptor $descriptor, mixed $request): mixed
     {
         $response = $this->connector->send(
-            new SkirRpcRequest($descriptor, $request, $this->codec, $this->endpoint),
+            new SkirRpcRequest($descriptor, $request, $this->endpoint),
         );
 
         if ($response->failed()) {
@@ -43,7 +41,7 @@ final class SkirClient
         }
 
         try {
-            return $this->codec->decodeResponse($descriptor, $response->body());
+            return DenseJson::fromJson($descriptor->responseType, $response->body());
         } catch (SkirRuntimeException $exception) {
             throw SkirClientException::invalidResponse($descriptor, $exception);
         }

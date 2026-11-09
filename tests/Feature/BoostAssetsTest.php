@@ -82,7 +82,6 @@ final class BoostAssetsTest extends TestCase
             [
                 'SKIR_CLIENT_BASE_URL',
                 'SKIR_CLIENT_ENDPOINT',
-                'SKIR_CLIENT_CODEC',
                 'SKIR_CLIENT_ROOT',
                 'SKIR_CLIENT_SKIR_BIN',
                 'SKIR_CLIENT_NODE',
@@ -93,9 +92,6 @@ final class BoostAssetsTest extends TestCase
         foreach ([
             'configure-composer',
             'composer dump-autoload',
-            'dense_json',
-            'standard_json',
-            'base64_dense_json',
             'SkirClientException',
             'SkirRuntimeException',
             'FatalRequestException',

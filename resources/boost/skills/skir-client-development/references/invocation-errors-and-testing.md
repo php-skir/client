@@ -7,23 +7,17 @@ Application code should call the generated methods so requests and responses ret
 types. Use low-level `SkirClient::invoke()` only for debugging or custom integrations; it returns the
 decoded transport value rather than a generated response object.
 
-The client and server must use the same codec:
-
-- `dense_json`: descriptor-driven JSON; structs are positional arrays.
-- `standard_json`: readable JSON objects with named struct fields.
-- `base64_dense_json`: dense JSON inside a base64-encoded JSON string.
-
-An unsupported configured codec throws `SkirClientException` while Laravel resolves the transport.
+The client speaks the standard SkirRPC protocol: it POSTs `MethodName:methodNumber::denseJson` and
+decodes a dense JSON response, so it works against any SkirRPC server.
 
 ## Distinguish failures
 
 | Boundary | Result | Inspect or correct |
 |---|---|---|
 | HTTP response considered failed, normally 4xx/5xx | `SkirClientException` with method and response | Inspect status/body and the server error policy |
-| Successful HTTP response cannot be decoded | `SkirClientException` with method, null response, previous `SkirRuntimeException` | Verify response shape and matching codec |
-| Request encoding fails | `SkirRuntimeException` propagates directly | Verify generated request values and codec input |
+| Successful HTTP response cannot be decoded | `SkirClientException` with method, null response, previous `SkirRuntimeException` | Verify the endpoint is a SkirRPC server and the schemas match |
+| Request encoding fails | `SkirRuntimeException` propagates directly | Verify generated request values |
 | DNS, connection, or TLS fails | Saloon `FatalRequestException` propagates with no response | Inspect URL, DNS, TLS, and connectivity |
-| Codec is unsupported | `SkirClientException` with null method and response | Correct the configured codec |
 
 Responses Saloon does not classify as failed, including redirects by default, continue to decoding.
 Catching only `SkirClientException` does not catch encoding or network failures.
@@ -45,7 +39,7 @@ $user = $client->getUser(new GetUserRequest(userId: 42));
 $mockClient->assertSent(fn (Request $request): bool =>
     $request instanceof SkirRpcRequest
     && $request->resolveEndpoint() === '/api/skir'
-    && $request->body()->all()['method'] === 'GetUser'
+    && $request->descriptor->name === 'GetUser'
 );
 $mockClient->assertSentCount(1);
 ```
