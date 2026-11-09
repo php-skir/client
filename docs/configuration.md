@@ -37,6 +37,21 @@ $client = new SkirClient('https://api.example.test', '/api/skir');
 
 ## Wire format
 
-The client speaks the standard SkirRPC protocol, the same one upstream Skir clients use. Each call is a `POST` whose body is `MethodName:methodNumber::denseJsonRequest`, and the server answers with the response in dense JSON. Any SkirRPC server works, whether it is `php-skir/server` or a service written in another language.
+The client speaks the standard SkirRPC protocol, the same one upstream Skir clients use, so any SkirRPC server works, whether it is `php-skir/server` or a service written in another language. Each call is a `POST` whose body is `MethodName:methodNumber:format:request`.
+
+By default requests and responses use dense JSON, which the Skir docs recommend for APIs. Set `SKIR_CLIENT_FORMAT=readable` to exchange readable JSON instead, for example while debugging:
+
+```dotenv
+SKIR_CLIENT_FORMAT=readable
+```
+
+```php
+use Skir\Client\SkirClient;
+use Skir\Client\WireFormat;
+
+$client = new SkirClient('https://api.example.test', '/api/skir', WireFormat::Readable);
+```
+
+Readable JSON is meant for humans and is not safe for persistence. Binary is not part of the SkirRPC wire protocol; generated classes offer `toBytes()` and `fromBytes()` when you need it outside RPC.
 
 See [Generating clients](generating-clients.md) for the typed generation workflow and [Error handling and testing](error-handling-and-testing.md) for transport failure handling and mocks.

@@ -42,4 +42,9 @@ final class SkirClientException extends RuntimeException
     {
         return new self('Set [skir-client.base_url] (SKIR_CLIENT_BASE_URL) to the SkirRPC server URL.');
     }
+
+    public static function unsupportedFormat(string $format): self
+    {
+        return new self("Skir client format [{$format}] is not supported. Use [dense] or [readable].");
+    }
 }

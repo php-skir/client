@@ -82,6 +82,7 @@ final class BoostAssetsTest extends TestCase
             [
                 'SKIR_CLIENT_BASE_URL',
                 'SKIR_CLIENT_ENDPOINT',
+                'SKIR_CLIENT_FORMAT',
                 'SKIR_CLIENT_ROOT',
                 'SKIR_CLIENT_SKIR_BIN',
                 'SKIR_CLIENT_NODE',

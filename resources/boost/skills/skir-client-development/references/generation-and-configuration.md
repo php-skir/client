@@ -59,3 +59,5 @@ SKIR_CLIENT_ENDPOINT=/api/skir
 
 `SKIR_CLIENT_BASE_URL` is required. `SKIR_CLIENT_ENDPOINT` defaults to `/`; do not duplicate the
 endpoint path in the base URL.
+
+`SKIR_CLIENT_FORMAT` is `dense` (default) or `readable`; readable JSON is for debugging only.
