@@ -86,6 +86,6 @@ generators:
               - max:100
 ```
 
-Validation failures occur when a generated Data class hydrates a raw request or response through `makeFromSkirPayload()`. In this journey, a response whose `name` exceeds 100 characters fails while `getUser()` hydrates `UserData`; the failure is not deferred until the property is read. A raw request passed through `GetUserRequestData::makeFromSkirPayload()` follows the same rule, while the generated client does not rehydrate an already constructed request object.
+Validation failures occur when a generated Data class hydrates a raw request or response through `makeFromSkirPayload()`. A response whose `name` exceeds 100 characters fails while `getUser()` hydrates `UserData`; the failure is not deferred until the property is read. A raw request passed through `GetUserRequestData::makeFromSkirPayload()` follows the same rule, while the generated client does not rehydrate an already constructed request object.
 
 See the [Skir Laravel Data Generator](https://github.com/php-skir/skir-laravel-data-generator) for its full validation and generated-API reference.
