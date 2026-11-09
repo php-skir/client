@@ -157,8 +157,8 @@ jobs:
         run: |
           composer config minimum-stability dev
           composer config prefer-stable true
-          composer config repositories.runtime '{"type":"path","url":"../runtime","options":{"symlink":false}}' --json
-          composer config repositories.client '{"type":"path","url":"../client","options":{"symlink":false}}' --json
+          composer config repositories.runtime '{"type":"path","url":"../runtime","options":{"symlink":false,"versions":{"php-skir/runtime":"0.2.x-dev"}}}' --json
+          composer config repositories.client '{"type":"path","url":"../client","options":{"symlink":false,"versions":{"php-skir/client":"0.2.x-dev"}}}' --json
           composer require "php-skir/client:*@dev" --no-interaction --no-progress
           composer require laravel/boost:^2.4 --dev --no-interaction --no-progress
           test ! -L vendor/php-skir/client
