@@ -52,7 +52,7 @@ composer dump-autoload
 
 ## Call the typed client
 
-Configure the transport endpoint and matching codec as described in [Configuration and codecs](configuration-and-codecs.md), then use the generated client:
+Configure the transport endpoint as described in [Configuration](configuration.md), then use the generated client:
 
 ```php
 use Skir\Admin\GetUserRequestData;

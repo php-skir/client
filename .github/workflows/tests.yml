@@ -52,10 +52,21 @@ jobs:
         with:
           path: client
 
+      - name: Resolve runtime branch
+        id: runtime-ref
+        run: |
+          branch="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          if git ls-remote --exit-code --heads https://github.com/php-skir/runtime.git "$branch" > /dev/null; then
+            echo "ref=$branch" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout runtime
         uses: actions/checkout@v7
         with:
           repository: php-skir/runtime
+          ref: ${{ steps.runtime-ref.outputs.ref }}
           path: runtime
 
       - name: Setup PHP
@@ -100,10 +111,21 @@ jobs:
         with:
           path: client
 
+      - name: Resolve runtime branch
+        id: runtime-ref
+        run: |
+          branch="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          if git ls-remote --exit-code --heads https://github.com/php-skir/runtime.git "$branch" > /dev/null; then
+            echo "ref=$branch" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout runtime
         uses: actions/checkout@v7
         with:
           repository: php-skir/runtime
+          ref: ${{ steps.runtime-ref.outputs.ref }}
           path: runtime
 
       - name: Setup PHP
@@ -135,8 +157,8 @@ jobs:
         run: |
           composer config minimum-stability dev
           composer config prefer-stable true
-          composer config repositories.runtime '{"type":"path","url":"../runtime","options":{"symlink":false}}' --json
-          composer config repositories.client '{"type":"path","url":"../client","options":{"symlink":false}}' --json
+          composer config repositories.runtime '{"type":"path","url":"../runtime","options":{"symlink":false,"versions":{"php-skir/runtime":"0.2.x-dev"}}}' --json
+          composer config repositories.client '{"type":"path","url":"../client","options":{"symlink":false,"versions":{"php-skir/client":"0.2.x-dev"}}}' --json
           composer require "php-skir/client:*@dev" --no-interaction --no-progress
           composer require laravel/boost:^2.4 --dev --no-interaction --no-progress
           test ! -L vendor/php-skir/client
@@ -169,10 +191,21 @@ jobs:
         with:
           path: client
 
+      - name: Resolve runtime branch
+        id: runtime-ref
+        run: |
+          branch="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          if git ls-remote --exit-code --heads https://github.com/php-skir/runtime.git "$branch" > /dev/null; then
+            echo "ref=$branch" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout runtime
         uses: actions/checkout@v7
         with:
           repository: php-skir/runtime
+          ref: ${{ steps.runtime-ref.outputs.ref }}
           path: runtime
 
       - name: Setup PHP

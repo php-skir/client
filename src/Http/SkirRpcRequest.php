@@ -7,20 +7,19 @@ namespace Skir\Client\Http;
 use Saloon\Contracts\Body\HasBody;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
-use Saloon\Traits\Body\HasJsonBody;
-use Skir\Client\Codecs\SkirClientCodec;
+use Saloon\Traits\Body\HasStringBody;
+use Skir\Runtime\DenseJson;
 use Skir\Runtime\MethodDescriptor;
 
 final class SkirRpcRequest extends Request implements HasBody
 {
-    use HasJsonBody;
+    use HasStringBody;
 
     protected Method $method = Method::POST;
 
     public function __construct(
-        private readonly MethodDescriptor $descriptor,
-        private readonly mixed $request,
-        private readonly SkirClientCodec $codec,
+        public readonly MethodDescriptor $descriptor,
+        public readonly mixed $request,
         private readonly string $endpoint = '/',
     ) {}
 
@@ -31,15 +30,20 @@ final class SkirRpcRequest extends Request implements HasBody
 
     /**
      * @return array{
-     *     method: string,
-     *     request: mixed
+     *     Content-Type: string
      * }
      */
-    protected function defaultBody(): array
+    protected function defaultHeaders(): array
     {
         return [
-            'method' => $this->descriptor->name,
-            'request' => $this->codec->encodeRequest($this->descriptor, $this->request),
+            'Content-Type' => 'text/plain; charset=utf-8',
         ];
+    }
+
+    protected function defaultBody(): string
+    {
+        $requestJson = DenseJson::toJson($this->descriptor->requestType, $this->request);
+
+        return "{$this->descriptor->name}:{$this->descriptor->number}::{$requestJson}";
     }
 }

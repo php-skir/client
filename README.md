@@ -14,7 +14,7 @@ Laravel package for calling SkirRPC services through generated typed clients and
 
 - Generate typed RPC clients from Skir schemas with the [client generation guide](docs/generating-clients.md).
 - Use standard PHP objects, [Laravel Data](docs/laravel-data.md), or [Simple Data Objects](docs/simple-data-objects.md).
-- Configure Laravel container resolution and matching wire codecs with the [configuration and codecs guide](docs/configuration-and-codecs.md).
+- Configure the server URL and endpoint with the [configuration guide](docs/configuration.md).
 - [Handle failures and test without network requests](docs/error-handling-and-testing.md).
 
 ## Quick start
@@ -62,12 +62,11 @@ composer dump-autoload
 php artisan vendor:publish --tag=skir-client-config
 ```
 
-Configure the server endpoint and matching wire codec:
+Configure the server endpoint:
 
 ```dotenv
 SKIR_CLIENT_BASE_URL=https://api.example.test
 SKIR_CLIENT_ENDPOINT=/api/skir
-SKIR_CLIENT_CODEC=dense_json
 ```
 
 Call the service through the generated typed client:
@@ -92,5 +91,5 @@ Standard PHP is the dependency-light baseline. Use [`skir-laravel-data-generator
 - [Generating clients](docs/generating-clients.md)
 - [Laravel Data](docs/laravel-data.md)
 - [Simple Data Objects](docs/simple-data-objects.md)
-- [Configuration and codecs](docs/configuration-and-codecs.md)
+- [Configuration](docs/configuration.md)
 - [Error handling and testing](docs/error-handling-and-testing.md)
