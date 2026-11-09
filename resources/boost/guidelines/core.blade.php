@@ -6,7 +6,7 @@ generator-owned and may be replaced; do not edit files inside it.
 
 Prefer the generated typed client for application code. Use `Skir\Client\SkirClient::invoke()` only
 for debugging or custom transport integrations. Keep the base URL, endpoint, and codec aligned with
-the server. CBOR is a compact serialization format, not encryption or confidentiality.
+the server.
 
 Use the `skir-client-development` skill whenever generating or configuring a client, diagnosing
 transport failures, choosing a codec, or writing client tests. Client tests must use Saloon mocks

@@ -41,7 +41,6 @@ final class SkirClientServiceProvider extends ServiceProvider
     private function codecFromConfig(string $codec): SkirClientCodec
     {
         return match ($codec) {
-            'cbor' => SkirClientCodecs::cbor(),
             'dense_json' => SkirClientCodecs::denseJson(),
             'standard_json' => SkirClientCodecs::standardJson(),
             'base64_dense_json' => SkirClientCodecs::base64DenseJson(),

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Skir\Client\Tests\Feature;
 
-use CBOR\Decoder;
-use CBOR\Encoder;
-use CBOR\StringStream;
 use PHPUnit\Framework\Attributes\Test;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
@@ -186,58 +183,6 @@ final class SkirClientTest extends TestCase
     }
 
     #[Test]
-    public function it_can_use_cbor_payloads(): void
-    {
-        $userType = Type::struct([
-            Field::value('id', 0, Type::int32()),
-            Field::value('name', 1, Type::string()),
-        ]);
-
-        $mockClient = new MockClient([
-            MockResponse::make(
-                (new Encoder)->encode(DenseJson::encode($userType, [
-                    'id' => 42,
-                    'name' => 'Ruben',
-                ])),
-                200,
-                [
-                    'Content-Type' => 'application/cbor',
-                ],
-            ),
-        ]);
-
-        $client = new SkirClient('https://example.com/api', codec: SkirClientCodecs::cbor());
-        $client->withMockClient($mockClient);
-
-        $result = $client->invoke(
-            new MethodDescriptor('RenameUser', 1002, $userType, $userType),
-            [
-                'id' => 42,
-                'name' => 'Maxim',
-            ],
-        );
-
-        $this->assertSame([
-            'id' => 42,
-            'name' => 'Ruben',
-        ], $result);
-
-        $mockClient->assertSent(function (Request $request) use ($userType): bool {
-            $payload = Decoder::create()
-                ->decode(StringStream::create($request->body()->all()))
-                ->normalize();
-
-            return $request->resolveEndpoint() === '/'
-                && $request->headers()->get('Content-Type') === 'application/cbor'
-                && $payload['method'] === 'RenameUser'
-                && DenseJson::decode($userType, $payload['request']) === [
-                    'id' => 42,
-                    'name' => 'Maxim',
-                ];
-        });
-    }
-
-    #[Test]
     public function it_localises_failed_rpc_responses(): void
     {
         $mockClient = new MockClient([
@@ -299,16 +244,6 @@ final class SkirClientTest extends TestCase
             SkirClientCodecs::base64DenseJson(),
             '"%%%"',
             'Skir base64 dense JSON response contains invalid base64.',
-        );
-    }
-
-    #[Test]
-    public function it_localises_invalid_cbor_responses(): void
-    {
-        $this->assertInvalidResponseIsLocalised(
-            SkirClientCodecs::cbor(),
-            "\xff",
-            'Invalid CBOR:',
         );
     }
 
