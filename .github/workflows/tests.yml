@@ -52,10 +52,21 @@ jobs:
         with:
           path: client
 
+      - name: Resolve runtime branch
+        id: runtime-ref
+        run: |
+          branch="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          if git ls-remote --exit-code --heads https://github.com/php-skir/runtime.git "$branch" > /dev/null; then
+            echo "ref=$branch" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout runtime
         uses: actions/checkout@v7
         with:
           repository: php-skir/runtime
+          ref: ${{ steps.runtime-ref.outputs.ref }}
           path: runtime
 
       - name: Setup PHP
@@ -100,10 +111,21 @@ jobs:
         with:
           path: client
 
+      - name: Resolve runtime branch
+        id: runtime-ref
+        run: |
+          branch="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          if git ls-remote --exit-code --heads https://github.com/php-skir/runtime.git "$branch" > /dev/null; then
+            echo "ref=$branch" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout runtime
         uses: actions/checkout@v7
         with:
           repository: php-skir/runtime
+          ref: ${{ steps.runtime-ref.outputs.ref }}
           path: runtime
 
       - name: Setup PHP
@@ -169,10 +191,21 @@ jobs:
         with:
           path: client
 
+      - name: Resolve runtime branch
+        id: runtime-ref
+        run: |
+          branch="${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
+          if git ls-remote --exit-code --heads https://github.com/php-skir/runtime.git "$branch" > /dev/null; then
+            echo "ref=$branch" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=main" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout runtime
         uses: actions/checkout@v7
         with:
           repository: php-skir/runtime
+          ref: ${{ steps.runtime-ref.outputs.ref }}
           path: runtime
 
       - name: Setup PHP
