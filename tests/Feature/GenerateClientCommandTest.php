@@ -108,6 +108,7 @@ PHP);
                 '--node' => PHP_BINARY,
             ])
             ->expectsOutputToContain('Unable to parse skir.yml.')
+            ->expectsOutputToContain('Skir generation failed with exit code 1.')
             ->assertExitCode(1);
     }
 

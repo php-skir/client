@@ -37,4 +37,9 @@ final class SkirClientException extends RuntimeException
             previous: $previous,
         );
     }
+
+    public static function missingBaseUrl(): self
+    {
+        return new self('Set [skir-client.base_url] (SKIR_CLIENT_BASE_URL) to the SkirRPC server URL.');
+    }
 }

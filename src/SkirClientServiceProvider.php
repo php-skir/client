@@ -6,6 +6,7 @@ namespace Skir\Client;
 
 use Illuminate\Support\ServiceProvider;
 use Skir\Client\Commands\GenerateClientCommand;
+use Skir\Client\Exceptions\SkirClientException;
 
 final class SkirClientServiceProvider extends ServiceProvider
 {
@@ -14,10 +15,13 @@ final class SkirClientServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/skir-client.php', 'skir-client');
 
         $this->app->bind(SkirClient::class, function (): SkirClient {
-            return new SkirClient(
-                baseUrl: (string) config('skir-client.base_url'),
-                endpoint: (string) config('skir-client.endpoint', '/'),
-            );
+            $baseUrl = config('skir-client.base_url');
+
+            if (! is_string($baseUrl) || $baseUrl === '') {
+                throw SkirClientException::missingBaseUrl();
+            }
+
+            return new SkirClient($baseUrl, (string) config('skir-client.endpoint'));
         });
     }
 

@@ -45,7 +45,7 @@ final class GenerateClientCommand extends Command
                 $this->output->write($buffer);
             });
         } catch (ProcessFailedException $exception) {
-            $this->error($this->failureMessage($exception));
+            $this->error("Skir generation failed with exit code {$exception->getProcess()->getExitCode()}.");
 
             return self::FAILURE;
         }
@@ -53,22 +53,5 @@ final class GenerateClientCommand extends Command
         $this->comment('Generated Skir client code.');
 
         return self::SUCCESS;
-    }
-
-    private function failureMessage(ProcessFailedException $exception): string
-    {
-        $errorOutput = trim($exception->getProcess()->getErrorOutput());
-
-        if ($errorOutput !== '') {
-            return $errorOutput;
-        }
-
-        $output = trim($exception->getProcess()->getOutput());
-
-        if ($output !== '') {
-            return $output;
-        }
-
-        return $exception->getMessage();
     }
 }

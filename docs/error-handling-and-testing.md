@@ -1,20 +1,22 @@
 # Error handling and testing
 
-The client reports failed HTTP responses and response-decoding failures through `SkirClientException`, while keeping the method descriptor available for application logging and policy decisions.
+The client reports failed HTTP responses and response-decoding failures through `SkirClientException`, with the invoked method descriptor attached.
 
 ## Handle client failures
 
 A response that Saloon considers failed throws `SkirClientException` with the message `Skir RPC request failed with status {status}.`. By default, Saloon treats 4xx and 5xx responses as failed. The invoked `MethodDescriptor` is available through `$exception->method`, and the Saloon `Response` is available through `$exception->response`. Inspect the response when your application needs its status or body; the exception does not expose separate server error fields.
 
-Any response Saloon does not consider failed proceeds to response decoding. Redirects are therefore not automatically handled by the failed-response branch.
+Redirects are followed by the underlying Guzzle client; any other response Saloon does not consider failed is decoded.
 
 A 2xx response that cannot be decoded also throws `SkirClientException`, but with the message `Skir RPC response for [{method}] could not be decoded.`. In this case, `$exception->method` contains the method descriptor, `$exception->response` is `null`, and `$exception->getPrevious()` returns the underlying `SkirRuntimeException`.
 
-The exception boundary is deliberately narrow:
+Only these cases throw `SkirClientException`:
 
-- Only a `SkirRuntimeException` thrown while decoding the response is wrapped as an invalid-response `SkirClientException`.
-- A `SkirRuntimeException` thrown while encoding the request propagates directly.
-- DNS, connection, and TLS failures propagate as `Saloon\Exceptions\Request\FatalRequestException` and do not have a response.
+- a failed HTTP response;
+- a successful response that cannot be decoded (the `SkirRuntimeException` is available as the previous exception);
+- resolving the client from the container without a configured base URL.
+
+A `SkirRuntimeException` thrown while encoding the request propagates directly. DNS, connection, and TLS failures propagate as `Saloon\Exceptions\Request\FatalRequestException` and have no response.
 
 The following handler is specifically for the `SkirClientException` paths. It does not catch direct request-encoding or Saloon fatal-request exceptions:
 
@@ -34,8 +36,6 @@ try {
     throw $exception;
 }
 ```
-
-Rethrowing preserves the application's exception policy after adding contextual logging; Laravel's exception handler can report the exception once.
 
 ## Test a generated client
 
