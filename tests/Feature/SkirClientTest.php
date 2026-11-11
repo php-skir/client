@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Skir\Client\Tests\Feature;
 
 use PHPUnit\Framework\Attributes\Test;
+use Saloon\Http\Auth\HeaderAuthenticator;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\Request;
+use Saloon\Http\Response;
 use Skir\Client\Exceptions\SkirClientException;
 use Skir\Client\Http\SkirRpcRequest;
 use Skir\Client\SkirClient;
@@ -159,6 +161,40 @@ final class SkirClientTest extends TestCase
         $mockClient->assertSent(function (Request $request): bool {
             return $request instanceof SkirRpcRequest
                 && $request->body()->all() === "RenameUser:1002:readable:{\n  \"id\": 42,\n  \"name\": \"Maxim\"\n}";
+        });
+    }
+
+    #[Test]
+    public function it_sends_no_authentication_by_default(): void
+    {
+        $mockClient = new MockClient([
+            SkirRpcRequest::class => MockResponse::make('25', 200),
+        ]);
+
+        $client = new SkirClient('https://example.com/api');
+        $client->withMockClient($mockClient);
+        $client->invoke(new MethodDescriptor('Square', 1001, Type::float32(), Type::float32()), 5.0);
+
+        $mockClient->assertSent(function (Request $request, Response $response): bool {
+            return $response->getPendingRequest()->headers()->get('Authorization') === null;
+        });
+    }
+
+    #[Test]
+    public function it_applies_the_given_authenticator(): void
+    {
+        $mockClient = new MockClient([
+            SkirRpcRequest::class => MockResponse::make('25', 200),
+        ]);
+
+        $client = (new SkirClient('https://example.com/api'))
+            ->withAuthenticator(new HeaderAuthenticator('secret', 'X-Trackr-Internal-Token'))
+            ->withMockClient($mockClient);
+
+        $client->invoke(new MethodDescriptor('Square', 1001, Type::float32(), Type::float32()), 5.0);
+
+        $mockClient->assertSent(function (Request $request, Response $response): bool {
+            return $response->getPendingRequest()->headers()->get('X-Trackr-Internal-Token') === 'secret';
         });
     }
 }

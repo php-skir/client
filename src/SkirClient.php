@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Skir\Client;
 
+use Saloon\Contracts\Authenticator;
 use Saloon\Http\Faking\MockClient;
 use Skir\Client\Exceptions\SkirClientException;
 use Skir\Client\Http\SkirConnector;
@@ -27,6 +28,13 @@ final class SkirClient
     public function withMockClient(MockClient $mockClient): self
     {
         $this->connector->withMockClient($mockClient);
+
+        return $this;
+    }
+
+    public function withAuthenticator(Authenticator $authenticator): self
+    {
+        $this->connector->authenticate($authenticator);
 
         return $this;
     }

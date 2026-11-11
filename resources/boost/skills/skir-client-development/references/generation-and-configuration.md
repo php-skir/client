@@ -61,3 +61,16 @@ SKIR_CLIENT_ENDPOINT=/api/skir
 endpoint path in the base URL.
 
 `SKIR_CLIENT_FORMAT` is `dense` (default) or `readable`; readable JSON is for debugging only.
+
+Authentication is off unless `SKIR_CLIENT_AUTH_TYPE` is set:
+
+| `SKIR_CLIENT_AUTH_TYPE` | Also set | Sends |
+|---|---|---|
+| `header` | `SKIR_CLIENT_AUTH_TOKEN`, `SKIR_CLIENT_AUTH_HEADER` (default `Authorization`) | `<header>: <token>` |
+| `bearer` | `SKIR_CLIENT_AUTH_TOKEN` | `Authorization: Bearer <token>` |
+| `basic` | `SKIR_CLIENT_AUTH_USERNAME`, `SKIR_CLIENT_AUTH_PASSWORD` | `Authorization: Basic ...` |
+
+A missing credential or unknown type throws `SkirClientException` on resolve. For custom schemes, implement
+`Saloon\Contracts\Authenticator` and attach it with
+`$this->app->extend(SkirClient::class, fn ($client) => $client->withAuthenticator(...))`. Never commit
+credentials; keep them in `.env`.

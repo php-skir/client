@@ -9,6 +9,13 @@ use Skir\Client\SkirClientServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
+    protected function tearDown(): void
+    {
+        SkirClientServiceProvider::useConfig('skir-client');
+
+        parent::tearDown();
+    }
+
     /**
      * @return array<int, class-string>
      */

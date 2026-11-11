@@ -38,9 +38,19 @@ final class SkirClientException extends RuntimeException
         );
     }
 
-    public static function missingBaseUrl(): self
+    public static function missingBaseUrl(string $configKey = 'skir-client'): self
     {
-        return new self('Set [skir-client.base_url] (SKIR_CLIENT_BASE_URL) to the SkirRPC server URL.');
+        return new self("Set [{$configKey}.base_url] (SKIR_CLIENT_BASE_URL) to the SkirRPC server URL.");
+    }
+
+    public static function unsupportedAuthType(string $type): self
+    {
+        return new self("Skir client auth type [{$type}] is not supported. Use [header], [bearer], or [basic].");
+    }
+
+    public static function missingAuthCredential(string $configKey, string $env): self
+    {
+        return new self("Set [{$configKey}] ({$env}) to use the configured Skir client authentication.");
     }
 
     public static function unsupportedFormat(string $format): self
