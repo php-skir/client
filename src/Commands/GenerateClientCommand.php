@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Skir\Client\Commands;
 
 use Illuminate\Console\Command;
+use Skir\Client\SkirClientServiceProvider;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -19,9 +20,10 @@ final class GenerateClientCommand extends Command
 
     public function handle(): int
     {
-        $root = (string) ($this->option('root') ?: config('skir-client.generator.root'));
-        $skirBin = (string) ($this->option('skir-bin') ?: config('skir-client.generator.skir_bin'));
-        $node = (string) ($this->option('node') ?: config('skir-client.generator.node', 'node'));
+        $key = SkirClientServiceProvider::configKey();
+        $root = (string) ($this->option('root') ?: config("{$key}.generator.root"));
+        $skirBin = (string) ($this->option('skir-bin') ?: config("{$key}.generator.skir_bin"));
+        $node = (string) ($this->option('node') ?: config("{$key}.generator.node", 'node'));
 
         if (! is_dir($root)) {
             $this->error("Skir project root does not exist: {$root}");

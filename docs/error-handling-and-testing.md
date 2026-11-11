@@ -14,7 +14,8 @@ Only these cases throw `SkirClientException`:
 
 - a failed HTTP response;
 - a successful response that cannot be decoded (the `SkirRuntimeException` is available as the previous exception);
-- resolving the client from the container without a configured base URL.
+- resolving the client from the container without a configured base URL;
+- resolving the client with an unsupported `auth.type`, or with an auth type whose credential is empty.
 
 A `SkirRuntimeException` thrown while encoding the request propagates directly. DNS, connection, and TLS failures propagate as `Saloon\Exceptions\Request\FatalRequestException` and have no response.
 

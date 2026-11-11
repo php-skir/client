@@ -16,7 +16,7 @@ Call [SkirRPC](https://skir.build/docs/skirrpc) services from Laravel through ge
 
 - Generate typed RPC clients from Skir schemas with the [client generation guide](docs/generating-clients.md).
 - Use standard PHP objects, [Laravel Data](docs/laravel-data.md), or [Simple Data Objects](docs/simple-data-objects.md).
-- Configure the server URL and endpoint with the [configuration guide](docs/configuration.md).
+- Configure the server URL, endpoint, and authentication with the [configuration guide](docs/configuration.md).
 - [Handle failures and test without network requests](docs/error-handling-and-testing.md).
 
 ## Quick start
@@ -70,6 +70,16 @@ Configure the server endpoint:
 SKIR_CLIENT_BASE_URL=https://api.example.test
 SKIR_CLIENT_ENDPOINT=/api/skir
 ```
+
+If the server expects a credential, configure it in the same file. For example, to send a shared secret in a custom header:
+
+```dotenv
+SKIR_CLIENT_AUTH_TYPE=header
+SKIR_CLIENT_AUTH_HEADER=X-Internal-Token
+SKIR_CLIENT_AUTH_TOKEN=your-shared-secret
+```
+
+Every request then carries `X-Internal-Token: your-shared-secret`. Bearer, basic, and custom authentication are covered in the [configuration guide](docs/configuration.md#authentication).
 
 Call the service through the generated typed client:
 
